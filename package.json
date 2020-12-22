@@ -1,0 +1,24 @@
+{
+  "name": "event-driven-application",
+  "version": "1.0.0",
+  "description": "",
+  "main": "caps.js",
+  "scripts": {
+    "test": "jest --coverage --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiggerman120/event-driven-application.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiggerman120/event-driven-application/issues"
+  },
+  "homepage": "https://github.com/tiggerman120/event-driven-application#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "faker": "^5.1.0"
+  }
+}
