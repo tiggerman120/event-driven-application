@@ -2,10 +2,10 @@
   "name": "event-driven-application",
   "version": "1.0.0",
   "description": "",
-  "main": "caps.js",
+  "main": "driver.js",
   "scripts": {
     "test": "jest --coverage --verbose",
-    "start": "node caps.js",
+    "start": "node driver.js",
     "watch": "nodemon -L"
   },
   "repository": {
