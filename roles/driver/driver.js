@@ -1,18 +1,23 @@
 'use strict';
+const socket = require('../../caps.js');
+let payload = require('../vendor/vendor');
+require('dotenv').config();
 
-const events = require('../../events');
-require('../vendor/vendor-handlers');
+const io = require('socket.io-client');
+const host = 'http://localhost:3000';
+const CAPSConnection = require('../../events');
 
-events.on('pickup', pickUphandler);
+CAPSConnection.on('pickup', pickUphandler, console.log('you are at the driver module'));
 
 function pickUphandler(payload) {
+  console.log('you\'re getting into the handler function', payload);
   setTimeout(() => {
-    console.log(`DRIVER: PICKED UP ${payload.orderId}`);
-    events.emit('in-transit', payload);
+    console.log(`DRIVER: PICKED UP ${payload}`);
+    //socket.emit('in-transit', payload);
   }, 1000);
   setTimeout(() => {
     console.log('delivered');
-    events.emit('delivered', payload);
+    //socket.emit('delivered', payload);
   }, 3000);
 }
 

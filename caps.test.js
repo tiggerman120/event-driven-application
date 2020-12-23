@@ -1,12 +1,12 @@
 'use strict';
 
-const vendor = require('./vendor/vendor-handlers');
-
+require('./roles/vendor/vendor-handlers');
+require('./roles/driver/driver');
+require('./caps');
 const events = require('./events');
 
 describe('caps events', () => {
   let consoleSpy;
-  let x = jest.fn();
 
   beforeEach(() => {
     consoleSpy = jest.spyOn(console, 'log').mockImplementation();
@@ -16,9 +16,19 @@ describe('caps events', () => {
     consoleSpy.mockRestore();
   });
 
-  it('hears event pickup', () => {
-    
-    expect(consoleSpy).toHaveBeenCalledWith();
+  it('pickup', () => {
+    events.emit('pickup', { orderId: 1 });
+    jest.useFakeTimers();
+    expect(consoleSpy).toBeCalled();
+  });
 
+  it('Delivered', () => {
+    events.emit('delivered', { orderId: 1 });
+    expect(consoleSpy).toBeCalled();
+  });
+
+  it('in-transit', () => {
+    events.emit('in-transit', { orderId: 1 });
+    expect(consoleSpy).toBeCalled();
   });
 });
