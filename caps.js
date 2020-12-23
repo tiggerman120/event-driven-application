@@ -1,55 +1,57 @@
 'use strict';
-
+const uuid = require('uuid').v4;
 require('dotenv').config();
 const port = process.env.PORT || 3000;
 const io = require('socket.io')(port);
 const caps = io.of('/caps-namespace');
-require('./roles/vendor/vendor');
-require('./roles/driver/driver');
-require('./events');
-
-const transit = io.of('in-transit-sub');
-const delivered = io.of('delivered-sub');
-
-function logger(payload) {
-  let timestamp = new Date().toString();
-  console.log('EVENT', { timestamp, payload });
-}
-
-
+console.log(port);
 io.on('connection', (socket) => {
   console.log('you are connected to the server', socket.id);
-  socket.on('pickup', payload => {
-    
-    logger();
-    //io.emit('pickup', payload);
-  });
 });
 
+
+
 caps.on('connection', (socket) => {
+  function logger(payload) {
+    let timestamp = new Date().toString();
+    console.log('EVENT', { timestamp, payload });
+  }
   console.log('you are connected to caps-namespace', socket.id);
   socket.on('join', room => {
+    console.log(`${socket.id} joining ${room}`);
     socket.join(room);
   });
 
+  socket.on('pickup', (payload) => {
+    console.log('line 25');
+    logger(payload);
+    caps.emit('pickup', payload);
+  });
 
-  io.on('pickup', (socket) => {
-    console.log('you are connected to the in-transit', socket.id);
-    socket.on('in-transit', (payload) => {
-      logger('in-transit', payload);
-      transit.emit('in-transit', payload);
-    });
+  socket.on('in-transit', (payload) => {
+    console.log('in transit function');
+    logger(payload);
+    caps.to(payload.store).emit('in-transit', payload);
+  });
 
-    delivered.on('connection', (socket) => {
-      console.log('you are connected to the transit', socket.id);
-      socket.on('delivered', (payload) => {
-        logger('delivered', payload);
-        delivered.emit('delivered', payload);
-      });
-    });
+  socket.on('delivered', (payload) => {
+    console.log('delivered function');
+    logger(payload);
+    caps.to(payload.store).emit('delivered', payload);
   });
 });
 
+const queue = {
+  chores: {},
+};
 
+// family.on('connection', socket => {
+//   socket.on('new chore', payload => {
+//     console.log('in the HUB - heard a new core', payload);
+//     const id = uuid();
+//     queue.chores[id] = payload;
 
-
+//     socket.emit('added');
+//     family.emit('chore', {id, payload});
+//   });
+//});
